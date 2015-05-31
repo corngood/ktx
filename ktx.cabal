@@ -26,6 +26,7 @@ source-repository head
     location: https://github.com/corngood/ktx.git
 
 flag dev
+    manual: True
     default: False
 
 library
