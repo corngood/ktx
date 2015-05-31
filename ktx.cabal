@@ -20,9 +20,13 @@ extra-source-files:
     KTX/LICENSING.md
     KTX/include/*.h
     KTX/lib/*.h
+
 source-repository head
     type: git
     location: https://github.com/corngood/ktx.git
+
+flag dev
+    default: False
 
 library
     exposed-modules:
@@ -38,6 +42,8 @@ library
         -Wall
         -fno-warn-unused-do-bind
         -fno-warn-name-shadowing
+    if flag(dev)
+        ghc-options: -Werror
     c-sources:
         KTX/lib/checkheader.c
         KTX/lib/errstr.c
