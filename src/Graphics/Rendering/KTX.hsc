@@ -17,7 +17,7 @@ import Data.Word (Word32)
 #if MIN_VERSION_base(4,5,0)
 import Foreign.C.Types (CUInt(CUInt), CInt(CInt))
 #else
-import Foreign.C.Types (CUInt, CInt)
+import Foreign.C.Types (CUInt)
 #endif
 import Foreign.C.Types (CUChar)
 import Foreign.C.String (CString, withCString)
