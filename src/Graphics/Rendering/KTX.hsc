@@ -1,3 +1,5 @@
+{-# Language DeriveDataTypeable #-}
+
 module Graphics.Rendering.KTX
     ( ErrorCode
     , Dimensions(..)
@@ -5,13 +7,15 @@ module Graphics.Rendering.KTX
     , loadTextureN
     ) where
 
-import Data.Word
-import Foreign.C.Types
-import Foreign.C.String
-import Foreign.Storable
-import Foreign.Marshal.Utils
-import Foreign.Ptr
-import Graphics.Rendering.OpenGL
+import Control.Exception (Exception, throwIO)
+import Data.Typeable (Typeable)
+import Data.Word (Word32)
+import Foreign.C.Types (CUInt(CUInt), CUChar)
+import Foreign.C.String (CString, withCString)
+import Foreign.Storable (peek)
+import Foreign.Marshal.Utils (with)
+import Foreign.Ptr (Ptr, nullPtr)
+import Graphics.Rendering.OpenGL (GLsizei, GLenum, GLuint, GLboolean, TextureObject(TextureObject))
 
 #include <ktx.h>
 
@@ -31,16 +35,24 @@ foreign import ccall "ktx.h ktxLoadTextureN" ktxLoadTextureN
     -> Ptr (Ptr CUChar)
     -> IO ErrorCode
 
+data GLEWException = GLEWException GLenum deriving (Eq, Ord, Typeable, Show)
+instance Exception GLEWException
+
+data KTXException = KTXException ErrorCode deriving (Eq, Ord, Typeable, Show)
+instance Exception KTXException
+
 initContext :: IO ()
 initContext = do
-    _ <- glewInit
-    return ()
+    e <- glewInit
+    case e of
+        0 -> return ()
+        _ -> throwIO (GLEWException e)
 
-loadTextureN :: FilePath -> IO (Either TextureObject ErrorCode)
+loadTextureN :: FilePath -> IO TextureObject
 loadTextureN path = withCString path $ \pathStr -> do
     with 0 $ \texPtr -> with 0 $ \bindingPtr -> do
         e <- ktxLoadTextureN pathStr texPtr bindingPtr nullPtr nullPtr nullPtr nullPtr nullPtr
         t <- peek texPtr
-        return $ case e of
-            0 -> Left $ TextureObject t
-            _ -> Right e
+        case e of
+            0 -> return $ TextureObject t
+            _ -> throwIO $ KTXException e
