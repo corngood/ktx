@@ -62,6 +62,8 @@ instance Exception GLEWException
 data KTXException = KTXException ErrorCode deriving (Eq, Ord, Typeable, Show)
 instance Exception KTXException
 
+-- | Initialise the GL context for loading textures.
+-- currently this just initialises /glew/.
 initContext :: IO ()
 initContext = do
     e <- glewInit
@@ -69,6 +71,8 @@ initContext = do
         0 -> return ()
         _ -> throwIO (GLEWException e)
 
+-- | Load a texture in ktx format from the given file path.
+-- a GL texture name will be generated and returned.
 loadTextureN :: FilePath -> IO TextureObject
 loadTextureN path = withCString path $ \pathStr -> do
     with 0 $ \texPtr -> with 0 $ \bindingPtr -> do
@@ -78,6 +82,8 @@ loadTextureN path = withCString path $ \pathStr -> do
             0 -> return $ TextureObject t
             _ -> throwIO $ KTXException e
 
+-- | Load a texture in ktx format from the given byte stream.
+-- a GL texture name will be generated and returned.
 loadTextureM :: ByteString -> IO TextureObject
 loadTextureM buf = unsafeUseAsCStringLen buf $ \(ptr, len) -> do
     with 0 $ \texPtr -> with 0 $ \bindingPtr -> do
