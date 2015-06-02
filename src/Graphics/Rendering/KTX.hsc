@@ -3,6 +3,8 @@
 module Graphics.Rendering.KTX
     ( ErrorCode
     , Dimensions(..)
+    , GLEWException(..)
+    , KTXException(..)
     , initContext
     , loadTextureN
     , loadTextureM
