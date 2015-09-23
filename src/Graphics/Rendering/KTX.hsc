@@ -23,16 +23,17 @@ import Foreign.C.Types (CUInt)
 #endif
 import Foreign.C.Types (CUChar)
 import Foreign.C.String (CString, withCString)
-import Foreign.Storable (peek)
+import Foreign.Storable (peek, poke)
 import Foreign.Marshal.Utils (with)
 import Foreign.Ptr (Ptr, nullPtr, castPtr)
-import Graphics.Rendering.OpenGL (GLsizei, GLenum, GLuint, GLboolean, TextureObject(TextureObject))
+import Graphics.Rendering.OpenGL (GLsizei, GLenum, GLuint, GLboolean(..), TextureObject(TextureObject))
 
 #include <ktx.h>
 
 type ErrorCode = (#type KTX_error_code)
 data Dimensions = Dimensions GLsizei GLsizei GLsizei
 
+foreign import ccall "GL/glew.h &glewExperimental" glewExperimental :: Ptr GLboolean
 foreign import ccall "GL/glew.h glewInit" glewInit :: IO GLenum
 
 foreign import ccall "ktx.h ktxLoadTextureN" ktxLoadTextureN
@@ -68,6 +69,7 @@ instance Exception KTXException
 -- currently this just initialises /glew/.
 initContext :: IO ()
 initContext = do
+    poke glewExperimental 1
     e <- glewInit
     case e of
         0 -> return ()
