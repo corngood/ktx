@@ -15,18 +15,13 @@ import Data.ByteString (ByteString)
 import Data.ByteString.Unsafe (unsafeUseAsCStringLen)
 import Data.Typeable (Typeable)
 import Data.Word (Word32)
--- constructors were not exported until here
-#if MIN_VERSION_base(4,5,0)
-import Foreign.C.Types (CUInt(CUInt), CInt(CInt))
-#else
 import Foreign.C.Types (CUInt)
-#endif
 import Foreign.C.Types (CUChar)
 import Foreign.C.String (CString, withCString)
 import Foreign.Storable (peek, poke)
 import Foreign.Marshal.Utils (with)
 import Foreign.Ptr (Ptr, nullPtr, castPtr)
-import Graphics.Rendering.OpenGL (GLsizei, GLenum, GLuint, GLboolean(..), TextureObject(TextureObject))
+import Graphics.Rendering.OpenGL (GLsizei, GLenum, GLuint, GLboolean, TextureObject(TextureObject))
 
 #include <ktx.h>
 
