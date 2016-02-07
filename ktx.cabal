@@ -1,5 +1,5 @@
 name: ktx
-version: 0.2
+version: 0.2.1
 cabal-version: >= 1.10
 build-type: Simple
 license: MIT
@@ -38,7 +38,7 @@ library
         Haskell2010
     build-depends:
         base >= 3 && < 5,
-        OpenGL >= 2.9 && < 3,
+        OpenGL >= 2.9 && < 4,
         bytestring >= 0.9 && < 1
     ghc-options:
         -Wall
